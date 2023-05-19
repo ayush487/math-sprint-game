@@ -17,6 +17,11 @@ const finalTimeEl = document.querySelector('.final-time');
 const baseTimeEl = document.querySelector('.base-time');
 const penaltyTimeEl = document.querySelector('.penalty-time');
 const playAgainBtn = document.querySelector('.play-again');
+// Score Storage
+const score10El = document.getElementById('score-for-10')
+const score25El = document.getElementById('score-for-25')
+const score50El = document.getElementById('score-for-50')
+const score99El = document.getElementById('score-for-99')
 
 // Equations
 let questionAmount = 0
@@ -29,6 +34,8 @@ let secondNumber = 0;
 let equationObject = {}
 const wrongFormat = []
 
+let bestScoreObject = {}
+
 // Time
 let timer;
 let timePlayed = 0
@@ -39,6 +46,40 @@ let finalTimeDisplay = '0.0s'
 
 // Scroll
 let valueY = 0
+
+// Save Score to local Strorage
+const saveScore = () => {
+  console.log('final Score', finalTime, 'Questions : ', questionAmount)
+  let previousRecords = JSON.parse(localStorage.getItem('scores'))
+  if(questionAmount == 10) {
+    if(previousRecords['score10']) {
+      previousRecords['score10'] = (finalTime < previousRecords['score10']) ? finalTime.toFixed(1) : previousRecords['score10']
+    }else {
+      previousRecords['score10'] = finalTime.toFixed(1)
+    }
+  }else if(questionAmount == 25) {
+    if(previousRecords['score25']) {
+      previousRecords['score25'] = (finalTime < previousRecords['score25']) ? finalTime.toFixed(1) : previousRecords['score25']
+    }else {
+      previousRecords['score25'] = finalTime.toFixed(1)
+    }
+  }else if(questionAmount == 50) {
+    // previousRecords['score50'] = finalTime.toFixed(1)
+    if(previousRecords['score50']) {
+      previousRecords['score50'] = (finalTime < previousRecords['score50']) ? finalTime.toFixed(1) : previousRecords['score50']
+    }else {
+      previousRecords['score50'] = finalTime.toFixed(1)
+    }
+  }else if(questionAmount == 99) {
+    // previousRecords['score99'] = finalTime.toFixed(1)
+    if(previousRecords['score99']) {
+      previousRecords['score99'] = (finalTime < previousRecords['score99']) ? finalTime.toFixed(1) : previousRecords['score99']
+    }else {
+      previousRecords['score99'] = finalTime.toFixed(1)
+    }
+  }
+  localStorage.setItem('scores', JSON.stringify(previousRecords))
+}
 
 const populateScorePage = () => {
   finalTimeEl.textContent = `${finalTime.toFixed(1)}s`
@@ -68,6 +109,7 @@ const checkTime = () => {
     })
     finalTime = timePlayed + penaltyTime
     itemContainer.scroll(0, 0)
+    saveScore()
     showScorePage()
   }
 }
@@ -245,6 +287,7 @@ const resetInitalData = () => {
 }
 
 const restart = () => {
+  retrieveScore()
   resetInitalData()
   splashPage.hidden = false
   scorePage.hidden = true
@@ -253,3 +296,24 @@ const restart = () => {
 // Event Listeners
 startForm.addEventListener('submit', selectQuestionAmount)
 gamePage.addEventListener('click', startTimer)
+
+const retrieveScore = () => {
+  if(localStorage.getItem('scores')){
+    let previousRecords = JSON.parse(localStorage.getItem('scores'))
+    score10El.textContent = (previousRecords['score10']) ? `${previousRecords['score10']}s` : '0.0s'
+    score25El.textContent = (previousRecords['score25']) ? `${previousRecords['score25']}s` : '0.0s'
+    score50El.textContent = (previousRecords['score50']) ? `${previousRecords['score50']}s` : '0.0s'
+    score99El.textContent = (previousRecords['score99']) ? `${previousRecords['score99']}s` : '0.0s'
+    console.log('test')
+  } else {
+    localStorage.setItem('scores', JSON.stringify(bestScoreObject))
+    score10El.textContent = '0.0s'
+    score25El.textContent = '0.0s'
+    score50El.textContent = '0.0s'
+    score99El.textContent = '0.0s'
+  }
+}
+
+window.onload = () => {
+  retrieveScore()
+}
