@@ -57,7 +57,6 @@ const showScorePage = () => {
 // Stop Timer, Process Results, go to Score page
 const checkTime = () => {
   if(playerGuessArray.length == questionAmount) {
-    console.log('player guess array : ', playerGuessArray)
     clearInterval(timer)
     // Check for wrong quesses, add penalty time
     equationsArray.forEach((equation, index) => {
@@ -114,10 +113,8 @@ const getRandomInt = (max) =>  {
 function createEquations() {
   // Randomly choose how many correct equations there should be
   const correctEquations = getRandomInt(questionAmount)
-  console.log('Correct Equations: ', correctEquations)
   // Set amount of wrong equations
   const wrongEquations = questionAmount - correctEquations
-  console.log('Wrong Equations: ', wrongEquations)
   // Loop through, multiply random numbers up to 9, push to array
   for (let i = 0; i < correctEquations; i++) {
     firstNumber = getRandomInt(9)
@@ -220,7 +217,6 @@ const getRadioValue = () => {
 const selectQuestionAmount = (e) => {
   e.preventDefault()
   questionAmount = getRadioValue()
-  console.log(questionAmount)
   if(questionAmount) {
     showCountdown()
   }
